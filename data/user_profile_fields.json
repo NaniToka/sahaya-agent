@@ -1,0 +1,86 @@
+[
+  {
+    "field": "citizenship",
+    "data_type": "string",
+    "question_en": "Are you a citizen of India?",
+    "question_ml": "നിങ്ങൾ ഒരു ഇന്ത്യൻ പൗരനാണോ?",
+    "example_answers": ["Indian", "Other"]
+  },
+  {
+    "field": "disability_percentage",
+    "data_type": "number",
+    "question_en": "What is your percentage of disability as per your certificate?",
+    "question_ml": "സർട്ടിഫിക്കറ്റ് പ്രകാരം നിങ്ങളുടെ വൈകല്യത്തിന്റെ ശതമാനം എത്രയാണ്?",
+    "example_answers": [40, 60, 80]
+  },
+  {
+    "field": "medical_severity_confirmed",
+    "data_type": "boolean",
+    "question_en": "Has the severity of your disability been verified by a competent medical authority?",
+    "question_ml": "നിങ്ങളുടെ ഭിന്നശേഷി മെഡിക്കൽ ബോർഡ് പരിശോധിച്ചുറപ്പാക്കിയിട്ടുണ്ടോ?",
+    "example_answers": [true, false]
+  },
+  {
+    "field": "state_of_residence",
+    "data_type": "string",
+    "question_en": "Which state do you currently reside in?",
+    "question_ml": "നിങ്ങൾ ഇപ്പോൾ ഏത് സംസ്ഥാനത്താണ് താമസിക്കുന്നത്?",
+    "example_answers": ["Kerala", "Tamil Nadu"]
+  },
+  {
+    "field": "age",
+    "data_type": "number",
+    "question_en": "What is your current age?",
+    "question_ml": "നിങ്ങളുടെ പ്രായം എത്രയാണ്?",
+    "example_answers": [18, 45, 65]
+  },
+  {
+    "field": "has_bpl_card",
+    "data_type": "boolean",
+    "question_en": "Do you belong to a Below Poverty Line (BPL) household?",
+    "question_ml": "നിങ്ങൾ ബിപിഎൽ (BPL) കുടുംബാംഗമാണോ?",
+    "example_answers": [true, false]
+  },
+  {
+    "field": "receiving_other_pension",
+    "data_type": "boolean",
+    "question_en": "Are you currently receiving any other pension or financial assistance from the government?",
+    "question_ml": "സർക്കാരിൽ നിന്ന് മറ്റേതെങ്കിലും പെൻഷൻ ലഭിക്കുന്നുണ്ടോ?",
+    "example_answers": [true, false]
+  },
+  {
+    "field": "monthly_income",
+    "data_type": "number",
+    "question_en": "What is your total monthly income?",
+    "question_ml": "നിങ്ങളുടെ പ്രതിമാസ വരുമാനം എത്രയാണ്?",
+    "example_answers": [10000, 18000, 25000]
+  },
+  {
+    "field": "years_since_last_adip_assistance",
+    "data_type": "number",
+    "question_en": "How many years has it been since you last received an assistive device from the government?",
+    "question_ml": "സർക്കാരിൽ നിന്ന് അവസാനമായി സഹായ ഉപകരണം ലഭിച്ചിട്ട് എത്ര വർഷമായി?",
+    "example_answers": [0, 2, 5]
+  },
+  {
+    "field": "device_deemed_essential",
+    "data_type": "boolean",
+    "question_en": "Has a medical authority deemed an assistive device essential for you?",
+    "question_ml": "നിങ്ങൾക്ക് ഒരു സഹായ ഉപകരണം അത്യന്താപേക്ഷിതമാണെന്ന് ഡോക്ടർ സാക്ഷ്യപ്പെടുത്തിയിട്ടുണ്ടോ?",
+    "example_answers": [true, false]
+  },
+  {
+    "field": "annual_family_income",
+    "data_type": "number",
+    "question_en": "What is your family's total annual income?",
+    "question_ml": "നിങ്ങളുടെ കുടുംബത്തിന്റെ വാർഷിക വരുമാനം എത്രയാണ്?",
+    "example_answers": [150000, 200000, 300000]
+  },
+  {
+    "field": "satisfactory_academic_progress",
+    "data_type": "boolean",
+    "question_en": "Has the head of your institution certified your academic progress as satisfactory?",
+    "question_ml": "നിങ്ങളുടെ പഠനനിലവാരം തൃപ്തികരമാണെന്ന് സ്ഥാപന മേധാവി സാക്ഷ്യപ്പെടുത്തിയിട്ടുണ്ടോ?",
+    "example_answers": [true, false]
+  }
+]

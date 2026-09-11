@@ -1,0 +1,279 @@
+[
+  {
+    "id": "scheme_udid",
+    "name_en": "Unique Disability Identity (UDID) Card",
+    "name_ml": "യുണീക്ക് ഡിസെബിലിറ്റി ഐഡന്റിറ്റി (UDID) കാർഡ്",
+    "description_en": "A single document of identification and verification of persons with disabilities for availing various benefits.",
+    "description_ml": "വിവിധ ആനുകൂല്യങ്ങൾ ലഭിക്കുന്നതിന് ഭിന്നശേഷിക്കാർക്കുള്ള തിരിച്ചറിയൽ കാർഡ്.",
+    "benefit": "Universal ID and Disability Certificate",
+    "source": {
+      "document_title": "Guidelines for the Issuance of Unique Disability Identity (UDID) Card",
+      "issuing_authority": "Department of Empowerment of Persons with Disabilities (DEPwD), Ministry of Social Justice & Empowerment",
+      "url": "www.swavlambancard.gov.in",
+      "date_version": "Version: 2.1, Date: 15-Jan-2023"
+    },
+    "eligibility_criteria": [
+      {
+        "id": "udid_citizenship",
+        "field": "citizenship",
+        "operator": "equals",
+        "value": "Indian",
+        "explanation_en": "You must be a citizen of India.",
+        "explanation_ml": "നിങ്ങൾ ഒരു ഇന്ത്യൻ പൗരനായിരിക്കണം.",
+        "citation": "udid_guideline.md, Section 2, Clause 2.1, \"The applicant must be a citizen of India.\""
+      },
+      {
+        "id": "udid_disability_percent",
+        "field": "disability_percentage",
+        "operator": "gte",
+        "value": 40,
+        "explanation_en": "You must have a disability of at least 40%.",
+        "explanation_ml": "നിങ്ങൾക്ക് കുറഞ്ഞത് 40% ഭിന്നശേഷി ഉണ്ടായിരിക്കണം.",
+        "citation": "udid_guideline.md, Section 2, Clause 2.2, \"The applicant must have a benchmark disability of at least [TO VERIFY] 40% as certified by a competent medical authority.\""
+      },
+      {
+        "id": "udid_severity_check",
+        "field": "medical_severity_confirmed",
+        "operator": "is_true",
+        "value": true,
+        "explanation_en": "The severity must be verified by a medical authority.",
+        "explanation_ml": "മെഡിക്കൽ ബോർഡ് ഭിന്നശേഷി സ്ഥിരീകരിക്കേണ്ടതുണ്ട്.",
+        "citation": "udid_guideline.md, Section 2, Clause 2.4, \"The severity of the disability must be verified and confirmed as genuine by the competent medical authority based on their clinical assessment.\"",
+        "requires_human_review": true
+      }
+    ],
+    "required_documents": [
+      {
+        "name_en": "Recent Passport size Photo",
+        "name_ml": "പാസ്സ്പോർട്ട് സൈസ് ഫോട്ടോ",
+        "citation": "udid_guideline.md, Section 4, Item 1"
+      },
+      {
+        "name_en": "Aadhaar Card or valid Identity Proof",
+        "name_ml": "ആധാർ കാർഡ് അല്ലെങ്കിൽ തിരിച്ചറിയൽ രേഖ",
+        "citation": "udid_guideline.md, Section 4, Item 2"
+      }
+    ],
+    "how_to_apply": "Applications must be submitted exclusively through the centralized online portal: Swavlamban Card Portal (www.swavlambancard.gov.in). Citation: udid_guideline.md, Section 5.",
+    "verified": false
+  },
+  {
+    "id": "scheme_igndps_kerala",
+    "name_en": "Indira Gandhi National Disability Pension Scheme (IGNDPS) - Kerala",
+    "name_ml": "ഇന്ദിരാഗാന്ധി ദേശീയ ഭിന്നശേഷി പെൻഷൻ പദ്ധതി (കേരളം)",
+    "description_en": "Monthly financial assistance for persons with severe or multiple disabilities from BPL families.",
+    "description_ml": "ബിപിഎൽ കുടുംബങ്ങളിലെ കഠിനമായ ഭിന്നശേഷിയുള്ളവർക്ക് പ്രതിമാസ ധനസഹായം.",
+    "benefit": "Rs. 1600 per month pension",
+    "source": {
+      "document_title": "Indira Gandhi National Disability Pension Scheme (IGNDPS) - Kerala Implementation",
+      "issuing_authority": "Department of Social Justice, Government of Kerala",
+      "url": "Sevana Pension portal",
+      "date_version": "Version: 1.4, Date: 10-Aug-2022"
+    },
+    "eligibility_criteria": [
+      {
+        "id": "kerala_pension_residency",
+        "field": "state_of_residence",
+        "operator": "equals",
+        "value": "Kerala",
+        "explanation_en": "You must be a resident of Kerala.",
+        "explanation_ml": "നിങ്ങൾ കേരളത്തിലെ സ്ഥിരതാമസക്കാരനായിരിക്കണം.",
+        "citation": "kerala_pension_guideline.md, Section 2, Clause 2.1, \"The applicant must be a permanent resident of Kerala.\""
+      },
+      {
+        "id": "kerala_pension_age",
+        "field": "age",
+        "operator": "between",
+        "value": [18, 79],
+        "explanation_en": "Your age must be between 18 and 79 years.",
+        "explanation_ml": "നിങ്ങളുടെ പ്രായം 18 നും 79 നും ഇടയിലായിരിക്കണം.",
+        "citation": "kerala_pension_guideline.md, Section 2, Clause 2.2, \"The applicant must be in the age group of [TO VERIFY] 18 to [TO VERIFY] 79 years.\""
+      },
+      {
+        "id": "kerala_pension_bpl",
+        "field": "has_bpl_card",
+        "operator": "is_true",
+        "value": true,
+        "explanation_en": "You must belong to a Below Poverty Line (BPL) household.",
+        "explanation_ml": "നിങ്ങൾ ബിപിഎൽ കുടുംബത്തിൽ പെട്ട ആളായിരിക്കണം.",
+        "citation": "kerala_pension_guideline.md, Section 2, Clause 2.3, \"The applicant must belong to a Below Poverty Line (BPL) household.\""
+      },
+      {
+        "id": "kerala_pension_disability_percent",
+        "field": "disability_percentage",
+        "operator": "gte",
+        "value": 80,
+        "explanation_en": "You must have a severe disability of at least 80% or multiple disabilities.",
+        "explanation_ml": "നിങ്ങൾക്ക് കുറഞ്ഞത് 80% വൈകല്യമോ ഒന്നിലധികം വൈകല്യങ്ങളോ ഉണ്ടായിരിക്കണം.",
+        "citation": "kerala_pension_guideline.md, Section 2, Clause 2.4, \"The applicant must have a severe disability of at least [TO VERIFY] 80% or multiple disabilities.\""
+      },
+      {
+        "id": "kerala_pension_other_assistance",
+        "field": "receiving_other_pension",
+        "operator": "is_false",
+        "value": false,
+        "explanation_en": "You must not be receiving other substantial financial assistance.",
+        "explanation_ml": "സർക്കാരിൽ നിന്ന് മറ്റ് പെൻഷനുകൾ ലഭിക്കാൻ പാടില്ല.",
+        "citation": "kerala_pension_guideline.md, Section 2, Clause 2.5, \"The applicant must not be receiving any other substantial financial assistance from state or central government, as determined by the welfare officer.\"",
+        "requires_human_review": true
+      }
+    ],
+    "required_documents": [
+      {
+        "name_en": "BPL Ration Card copy",
+        "name_ml": "ബിപിഎൽ റേഷൻ കാർഡിൻ്റെ പകർപ്പ്",
+        "citation": "kerala_pension_guideline.md, Section 4, Item 1"
+      },
+      {
+        "name_en": "Medical Certificate showing minimum 80% disability",
+        "name_ml": "80% വൈകല്യം തെളിയിക്കുന്ന മെഡിക്കൽ സർട്ടിഫിക്കറ്റ്",
+        "citation": "kerala_pension_guideline.md, Section 4, Item 2"
+      }
+    ],
+    "how_to_apply": "Submit to the Secretary of the respective Grama Panchayat, Municipality, or Municipal Corporation. Citation: kerala_pension_guideline.md, Section 5.",
+    "verified": false
+  },
+  {
+    "id": "scheme_adip",
+    "name_en": "Assistance to Disabled Persons for Purchase/Fitting of Aids/Appliances (ADIP)",
+    "name_ml": "ഭിന്നശേഷിക്കാർക്ക് സഹായ ഉപകരണങ്ങൾ നൽകുന്ന പദ്ധതി (ADIP)",
+    "description_en": "Assists disabled persons in procuring scientifically manufactured, modern, standard aids and appliances.",
+    "description_ml": "ഭിന്നശേഷിക്കാർക്ക് ആധുനിക സഹായ ഉപകരണങ്ങൾ നൽകുന്ന പദ്ധതി.",
+    "benefit": "Full or partial cost of assistive devices like wheelchairs and hearing aids.",
+    "source": {
+      "document_title": "Assistance to Disabled Persons for Purchase/Fitting of Aids/Appliances (ADIP) Scheme",
+      "issuing_authority": "Department of Empowerment of Persons with Disabilities (DEPwD)",
+      "url": "ADIP portal",
+      "date_version": "Version: 3.0, Date: 01-Apr-2021"
+    },
+    "eligibility_criteria": [
+      {
+        "id": "adip_citizenship",
+        "field": "citizenship",
+        "operator": "equals",
+        "value": "Indian",
+        "explanation_en": "You must be an Indian citizen.",
+        "explanation_ml": "നിങ്ങൾ ഒരു ഇന്ത്യൻ പൗരനായിരിക്കണം.",
+        "citation": "adip_guideline.md, Section 2, Clause 2.1, \"Must be an Indian citizen of any age.\""
+      },
+      {
+        "id": "adip_disability_percent",
+        "field": "disability_percentage",
+        "operator": "gte",
+        "value": 40,
+        "explanation_en": "You must have a disability of at least 40%.",
+        "explanation_ml": "നിങ്ങൾക്ക് കുറഞ്ഞത് 40% ഭിന്നശേഷി ഉണ്ടായിരിക്കണം.",
+        "citation": "adip_guideline.md, Section 2, Clause 2.2, \"Must possess a 40% [TO VERIFY] disability certificate.\""
+      },
+      {
+        "id": "adip_income",
+        "field": "monthly_income",
+        "operator": "lte",
+        "value": 22500,
+        "explanation_en": "Your monthly income must not exceed Rs. 22,500.",
+        "explanation_ml": "നിങ്ങളുടെ പ്രതിമാസ വരുമാനം 22,500 രൂപയിൽ കവിയാൻ പാടില്ല.",
+        "citation": "adip_guideline.md, Section 2, Clause 2.3, \"Monthly income from all sources must not exceed Rs. [TO VERIFY] 22,500.\""
+      },
+      {
+        "id": "adip_previous_assistance",
+        "field": "years_since_last_adip_assistance",
+        "operator": "gte",
+        "value": 3,
+        "explanation_en": "You must not have received this assistance in the last 3 years.",
+        "explanation_ml": "കഴിഞ്ഞ 3 വർഷത്തിനുള്ളിൽ നിങ്ങൾ ഈ സഹായം കൈപ്പറ്റിയിരിക്കരുത്.",
+        "citation": "adip_guideline.md, Section 2, Clause 2.4, \"Must not have received assistance during the last [TO VERIFY] 3 years for the same purpose from any source\""
+      },
+      {
+        "id": "adip_device_essential",
+        "field": "device_deemed_essential",
+        "operator": "is_true",
+        "value": true,
+        "explanation_en": "The device must be deemed essential by an authority.",
+        "explanation_ml": "ഉപകരണം അത്യന്താപേക്ഷിതമാണെന്ന് അധികാരി സാക്ഷ്യപ്പെടുത്തണം.",
+        "citation": "adip_guideline.md, Section 2, Clause 2.5, \"The prescribed assistive device must be deemed absolutely essential for the daily functioning of the individual by the recommending authority.\"",
+        "requires_human_review": true
+      }
+    ],
+    "required_documents": [
+      {
+        "name_en": "Disability Certificate",
+        "name_ml": "വൈകല്യ സർട്ടിഫിക്കറ്റ്",
+        "citation": "adip_guideline.md, Section 4, Item 1"
+      },
+      {
+        "name_en": "Income Certificate",
+        "name_ml": "വരുമാന സർട്ടിഫിക്കറ്റ്",
+        "citation": "adip_guideline.md, Section 4, Item 2"
+      }
+    ],
+    "how_to_apply": "Applications can be made at designated camps organized by ALIMCO or via the ADIP portal. Citation: adip_guideline.md, Section 5.",
+    "verified": false
+  },
+  {
+    "id": "scheme_scholarship",
+    "name_en": "Pre-Matric and Post-Matric Scholarships",
+    "name_ml": "പ്രീ-മെട്രിക്, പോസ്റ്റ്-മെട്രിക് സ്കോളർഷിപ്പുകൾ",
+    "description_en": "Financial assistance for students with disabilities pursuing education from Class 9 onwards.",
+    "description_ml": "ഒമ്പതാം ക്ലാസ് മുതൽ പഠിക്കുന്ന ഭിന്നശേഷിക്കാരായ വിദ്യാർത്ഥികൾക്ക് സാമ്പത്തിക സഹായം.",
+    "benefit": "Maintenance and book allowances (Rs. 500 - 1200 per month).",
+    "source": {
+      "document_title": "Pre-Matric and Post-Matric Scholarships for Students with Disabilities",
+      "issuing_authority": "Department of Empowerment of Persons with Disabilities (DEPwD)",
+      "url": "scholarships.gov.in",
+      "date_version": "Version: 1.2, Date: 20-May-2022"
+    },
+    "eligibility_criteria": [
+      {
+        "id": "scholarship_citizenship",
+        "field": "citizenship",
+        "operator": "equals",
+        "value": "Indian",
+        "explanation_en": "You must be an Indian national.",
+        "explanation_ml": "നിങ്ങൾ ഒരു ഇന്ത്യൻ പൗരനായിരിക്കണം.",
+        "citation": "scholarship_guideline.md, Section 2, Clause 2.1, \"The student must be an Indian national.\""
+      },
+      {
+        "id": "scholarship_disability_percent",
+        "field": "disability_percentage",
+        "operator": "gte",
+        "value": 40,
+        "explanation_en": "You must have a disability of at least 40%.",
+        "explanation_ml": "നിങ്ങൾക്ക് കുറഞ്ഞത് 40% ഭിന്നശേഷി ഉണ്ടായിരിക്കണം.",
+        "citation": "scholarship_guideline.md, Section 2, Clause 2.2, \"The student must have a benchmark disability of [TO VERIFY] 40% or more.\""
+      },
+      {
+        "id": "scholarship_income",
+        "field": "annual_family_income",
+        "operator": "lte",
+        "value": 250000,
+        "explanation_en": "Your family's annual income must not exceed Rs. 2,50,000.",
+        "explanation_ml": "കുടുംബ വാർഷിക വരുമാനം 2,50,000 രൂപയിൽ കൂടരുത്.",
+        "citation": "scholarship_guideline.md, Section 2, Clauses 2.3 & 2.4, \"the student's parents'/guardians' annual income must not exceed Rs. [TO VERIFY] 2,50,000.\""
+      },
+      {
+        "id": "scholarship_academic_progress",
+        "field": "satisfactory_academic_progress",
+        "operator": "is_true",
+        "value": true,
+        "explanation_en": "You must maintain satisfactory academic progress.",
+        "explanation_ml": "പഠനത്തിൽ തൃപ്തികരമായ പുരോഗതി ഉണ്ടായിരിക്കണം.",
+        "citation": "scholarship_guideline.md, Section 2, Clause 2.5, \"The student must maintain satisfactory academic progress and good conduct, as certified by the head of the institution.\"",
+        "requires_human_review": true
+      }
+    ],
+    "required_documents": [
+      {
+        "name_en": "UDID Card or Disability Certificate",
+        "name_ml": "UDID കാർഡ് അല്ലെങ്കിൽ വൈകല്യ സർട്ടിഫിക്കറ്റ്",
+        "citation": "scholarship_guideline.md, Section 4, Item 1"
+      },
+      {
+        "name_en": "Income Certificate of parents",
+        "name_ml": "മാതാപിതാക്കളുടെ വരുമാന സർട്ടിഫിക്കറ്റ്",
+        "citation": "scholarship_guideline.md, Section 4, Item 2"
+      }
+    ],
+    "how_to_apply": "All applications must be routed through the National Scholarship Portal (scholarships.gov.in). Citation: scholarship_guideline.md, Section 5.",
+    "verified": false
+  }
+]
