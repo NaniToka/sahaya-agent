@@ -48,6 +48,11 @@ export function useSpeech({ lang, onTranscript }: UseSpeechProps) {
     }
   }, [lang]);
 
+  const onTranscriptRef = useRef(onTranscript);
+  useEffect(() => {
+    onTranscriptRef.current = onTranscript;
+  }, [onTranscript]);
+
   // Initialize Speech Recognition
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -79,16 +84,20 @@ export function useSpeech({ lang, onTranscript }: UseSpeechProps) {
 
           setInterimText(currentInterim);
           if (finalTranscript.trim()) {
-            onTranscript(finalTranscript.trim());
+            onTranscriptRef.current(finalTranscript.trim());
           }
         };
 
         recognitionRef.current.onerror = (event: any) => {
           console.error("Speech recognition error", event.error);
+          if (event.error === "aborted") {
+            // Ignore aborted errors (happens when stopped manually or by another instance)
+            return;
+          }
           if (event.error === "not-allowed") {
-            setErrorMessage(t.micDenied);
+            setErrorMessage(translations[lang].micDenied);
           } else if (event.error === "no-speech") {
-            setErrorMessage(t.didntCatch);
+            setErrorMessage(translations[lang].didntCatch);
           } else {
             setErrorMessage("Microphone error: " + event.error);
           }
@@ -97,17 +106,18 @@ export function useSpeech({ lang, onTranscript }: UseSpeechProps) {
         };
 
         recognitionRef.current.onend = () => {
-          if (micState === "listening") {
-            setMicState("idle");
-            setInterimText("");
-          }
+          setMicState(prev => {
+            if (prev === "listening") return "idle";
+            return prev;
+          });
+          setInterimText("");
         };
       } else {
-        setErrorMessage(t.notSupported);
+        setErrorMessage(translations[lang].notSupported);
         setMicState("error");
       }
     }
-  }, [lang, bcp47, t, micState, onTranscript]);
+  }, [lang, bcp47]);
 
   const toggleListening = useCallback(() => {
     if (!recognitionRef.current) return;
