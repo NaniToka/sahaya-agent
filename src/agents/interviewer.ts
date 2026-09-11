@@ -5,7 +5,7 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-export async function runInterviewer(caseFile: CaseFile): Promise<string> {
+export async function runInterviewer(caseFile: CaseFile, isResume: boolean = false): Promise<string> {
   const missingFields = Object.keys(caseFile.user_profile).filter(
     field => !caseFile.user_profile[field as keyof typeof caseFile.user_profile]?.value
   );
@@ -30,7 +30,8 @@ ${JSON.stringify(caseFile.user_profile, null, 2)}
 Missing fields you still need to ask about:
 ${missingFields.join(', ')}
 
-Pick ONE missing field that makes sense to ask next and ask about it warmly. If consent is false, you MUST ask for consent first.`;
+Pick ONE missing field that makes sense to ask next and ask about it warmly. If consent is false, you MUST ask for consent first.
+${isResume ? "IMPORTANT: The user just asked a side question which was answered by another agent. Your ONLY job right now is to generate the ONE NEXT QUESTION to ask them to continue the interview (do not say 'shall we continue', just ask the question)." : ""}`;
 
   const messages: Anthropic.MessageParam[] = caseFile.transcript.map(msg => ({
     role: msg.speaker === 'user' ? 'user' : 'assistant',

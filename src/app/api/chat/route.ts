@@ -39,11 +39,12 @@ export async function POST(req: Request) {
     // 4. Save to DB
     saveCaseFile(caseFile);
 
-    // 5. Return reply and agent logs
+    // 5. Return reply, agent logs, and updated transcript
     return NextResponse.json({
       reply: replyText,
       agent_log: caseFile.agent_log,
-      stage: caseFile.stage
+      stage: caseFile.stage,
+      transcript: caseFile.transcript
     });
   } catch (error: any) {
     console.error('API Error:', error);

@@ -25,6 +25,12 @@ export type TranscriptMessage = {
   speaker: 'user' | 'agent' | 'system';
   text: string;
   timestamp: string;
+  sources?: {
+    sourceDocument: string;
+    section: string;
+    content: string;
+    isDemo: boolean;
+  }[];
 };
 
 export type AgentLogEntry = {

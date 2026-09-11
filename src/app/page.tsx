@@ -4,10 +4,18 @@ import { useState, useEffect, useRef } from "react";
 import { translations } from "../translations";
 import { useSpeech } from "../hooks/useSpeech";
 
+type Source = {
+  sourceDocument: string;
+  section: string;
+  content: string;
+  isDemo: boolean;
+};
+
 type Message = {
   id: string;
   role: "agent" | "user";
   text: string;
+  sources?: Source[];
 };
 
 type AgentLog = {
@@ -22,6 +30,7 @@ export default function Home() {
   const [inputValue, setInputValue] = useState("");
   const [agentLogs, setAgentLogs] = useState<AgentLog[]>([]);
   const [showLogs, setShowLogs] = useState(false);
+  const [expandedSources, setExpandedSources] = useState<Record<string, boolean>>({});
   const hasInteracted = useRef(false);
   
   // Use a hardcoded session ID for the demo
@@ -76,9 +85,23 @@ export default function Home() {
       if (data.agent_log) {
         setAgentLogs(data.agent_log);
       }
-
-      const agentMsg: Message = { id: (Date.now() + 1).toString(), role: "agent", text: data.reply };
-      setMessages(prev => [...prev, agentMsg]);
+      
+      if (data.transcript) {
+        // Sync messages from transcript, skipping the initial welcome message from client side 
+        // to merge properly, or just append the new transcript messages since the last sync.
+        // Actually, the simplest is to just overwrite the history with the new transcript + welcome msg.
+        const transcriptMsgs: Message[] = data.transcript.map((t: any, i: number) => ({
+          id: `t_${i}`,
+          role: t.speaker === 'user' ? 'user' : 'agent',
+          text: t.text,
+          sources: t.sources
+        }));
+        setMessages([{ id: "welcome", role: "agent", text: t.welcomeText }, ...transcriptMsgs]);
+      } else {
+        const agentMsg: Message = { id: (Date.now() + 1).toString(), role: "agent", text: data.reply };
+        setMessages(prev => [...prev, agentMsg]);
+      }
+      
       speak(data.reply);
       
     } catch (err: any) {
@@ -87,6 +110,10 @@ export default function Home() {
       const errorMsg: Message = { id: Date.now().toString(), role: "agent", text: "Sorry, there was an error processing your request." };
       setMessages(prev => [...prev, errorMsg]);
     }
+  };
+
+  const toggleSource = (id: string) => {
+    setExpandedSources(prev => ({...prev, [id]: !prev[id]}));
   };
 
   const handleTextSubmit = (e: React.FormEvent) => {
@@ -177,7 +204,38 @@ export default function Home() {
                 <div className={`rounded-2xl p-6 text-2xl shadow-md ${
                     msg.role === "agent" ? "bg-white text-gray-900 border-2 border-gray-300" : "bg-blue-800 text-white"
                   }`}>
-                  {msg.text}
+                  <div className="whitespace-pre-wrap">{msg.text}</div>
+                  
+                  {/* Source Cards */}
+                  {msg.sources && msg.sources.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <button 
+                        onClick={() => toggleSource(msg.id)}
+                        className="text-sm font-bold text-blue-700 flex items-center gap-1 hover:underline"
+                      >
+                        {expandedSources[msg.id] ? '▼ Hide Sources' : '▶ Show Sources'} ({msg.sources.length})
+                      </button>
+                      
+                      {expandedSources[msg.id] && (
+                        <div className="mt-3 space-y-3">
+                          {msg.sources.map((src, idx) => (
+                            <div key={idx} className="bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm">
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="font-bold text-gray-800">{src.sourceDocument}</span>
+                                {src.isDemo && (
+                                  <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full font-semibold">
+                                    Demo guideline
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-gray-600 font-semibold text-xs mb-2">Section: {src.section}</div>
+                              <div className="text-gray-700 italic border-l-2 border-gray-300 pl-2">"{src.content}"</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
                 {msg.role === "agent" && (
                   <div className="flex gap-4 ml-2">
