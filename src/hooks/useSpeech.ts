@@ -119,6 +119,13 @@ export function useSpeech({ lang, onTranscript }: UseSpeechProps) {
     }
   }, [lang, bcp47]);
 
+  const stopSpeaking = useCallback(() => {
+    if (synthRef.current) {
+      synthRef.current.cancel();
+      setMicState("idle");
+    }
+  }, []);
+
   const toggleListening = useCallback(() => {
     if (!recognitionRef.current) return;
     
@@ -134,20 +141,12 @@ export function useSpeech({ lang, onTranscript }: UseSpeechProps) {
       try {
         recognitionRef.current.start();
       } catch (e) {
-        // Handle cases where it's already started
         console.warn("Recognition already started");
       }
     }
-  }, [micState]);
+  }, [micState, stopSpeaking]);
 
-  const stopSpeaking = useCallback(() => {
-    if (synthRef.current) {
-      synthRef.current.cancel();
-      setMicState("idle");
-    }
-  }, []);
-
-  const speak = useCallback((text: string) => {
+  const speak = useCallback((text: string, isScreenReaderMode: boolean = false) => {
     if (!synthRef.current) return;
     
     // Stop listening before speaking
@@ -157,14 +156,27 @@ export function useSpeech({ lang, onTranscript }: UseSpeechProps) {
 
     stopSpeaking(); // Cancel any current speech
 
-    const utterance = new SpeechSynthesisUtterance(text);
+    if (isScreenReaderMode) {
+      // In screen reader mode, we don't speak via TTS.
+      // ARIA live region handles it in the UI.
+      return;
+    }
+
+    // Mask sensitive numbers before speaking
+    const maskedText = text.replace(/([A-Z0-9]{4,})(\d{4})/g, "ending in $2");
+
+    // Chunk the text into sentences to read in pieces if it's very long
+    // For simplicity in this demo, we'll just read the whole masked text,
+    // but in a production system, we'd queue chunks and wait for "next".
+
+    const utterance = new SpeechSynthesisUtterance(maskedText);
     
     // Find appropriate voice
     const voices = synthRef.current.getVoices();
     let selectedVoice = voices.find(v => v.lang === bcp47);
     
     if (!selectedVoice) {
-      // Fallback matching language prefix (e.g. any ml voice for ml-IN)
+      // Fallback matching language prefix
       const prefix = lang === "ml" ? "ml" : "en";
       selectedVoice = voices.find(v => v.lang.startsWith(prefix));
     }
@@ -176,8 +188,23 @@ export function useSpeech({ lang, onTranscript }: UseSpeechProps) {
     utterance.lang = bcp47;
     utterance.rate = speed === "slow" ? 0.7 : 1.0;
 
-    utterance.onstart = () => setMicState("speaking");
-    utterance.onend = () => setMicState("idle");
+    utterance.onstart = () => {
+      setMicState("speaking");
+    };
+    
+    utterance.onend = () => {
+      setMicState("idle");
+      // Hands-free conversation: auto start listening after speaking finishes
+      if (typeof window !== 'undefined' && (window as any).audioCues) {
+        (window as any).audioCues.playStartListening();
+      }
+      setTimeout(() => {
+        try {
+          recognitionRef.current?.start();
+        } catch(e) {}
+      }, 500);
+    };
+    
     utterance.onerror = (e) => {
       console.error("Speech synthesis error", e);
       setMicState("idle");
@@ -189,6 +216,20 @@ export function useSpeech({ lang, onTranscript }: UseSpeechProps) {
   const toggleSpeed = () => {
     setSpeed(prev => prev === "normal" ? "slow" : "normal");
   };
+
+  // 10 second timeout for hands-free prompt
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (micState === "listening" && !interimText) {
+      timeout = setTimeout(() => {
+        if (micState === "listening") {
+          recognitionRef.current?.stop();
+          speak(lang === "en" ? "Are you still there? Say repeat to hear the question again." : "നിങ്ങൾ അവിടെ ഉണ്ടോ? ചോദ്യം വീണ്ടും കേൾക്കാൻ റിപ്പീറ്റ് എന്ന് പറയുക.", false);
+        }
+      }, 10000);
+    }
+    return () => clearTimeout(timeout);
+  }, [micState, interimText, lang, speak]);
 
   return {
     micState,

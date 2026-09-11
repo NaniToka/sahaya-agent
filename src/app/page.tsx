@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { translations } from "../translations";
 import { useSpeech } from "../hooks/useSpeech";
+import { audioCues } from "../utils/audioCues";
 
 type Source = {
   sourceDocument: string;
@@ -38,13 +39,7 @@ export default function Home() {
 
   const t = translations[lang];
 
-  useEffect(() => {
-    setMessages([{ id: "welcome", role: "agent", text: t.welcomeText }]);
-  }, [t.welcomeText]);
-
-  const handleTranscript = (text: string) => {
-    addUserMessage(text);
-  };
+  const [accessibilityMode, setAccessibilityMode] = useState<"unset" | "voice" | "screen-reader">("unset");
 
   const {
     micState,
@@ -57,7 +52,87 @@ export default function Home() {
     stopSpeaking,
     toggleSpeed,
     setMicState
-  } = useSpeech({ lang, onTranscript: handleTranscript });
+  } = useSpeech({ lang, onTranscript: (text) => handleTranscript(text) });
+
+  useEffect(() => {
+    // Initial welcome
+    if (accessibilityMode === "unset") {
+      const welcome = lang === "en" 
+        ? "Welcome to Sahaya. Do you use a screen reader like TalkBack? Say yes or no." 
+        : "സഹായയിലേക്ക് സ്വാഗതം. നിങ്ങൾ ടോക്ക്ബാക്ക് പോലുള്ള സ്ക്രീൻ റീഡർ ഉപയോഗിക്കുന്നുണ്ടോ? അതെ അല്ലെങ്കിൽ ഇല്ല എന്ന് പറയുക.";
+      setMessages([{ id: "welcome", role: "agent", text: welcome }]);
+      speak(welcome, false); // always speak the first prompt so they know they can talk
+    }
+  }, [t.welcomeText, accessibilityMode, lang, speak]);
+
+  const handleTranscript = async (text: string) => {
+    // Import dynamically or ensure matchCommand is available
+    const { matchCommand } = require("../commands");
+    const cmd = matchCommand(text);
+
+    if (accessibilityMode === "unset") {
+      if (cmd === "YES") {
+        setAccessibilityMode("screen-reader");
+        const msg = lang === "en" ? "Screen reader mode activated." : "സ്ക്രീൻ റീഡർ മോഡ് സജീവമാക്കി.";
+        setMessages(prev => [...prev, { id: Date.now().toString(), role: "agent", text: msg }]);
+        if (typeof window !== 'undefined' && (window as any).audioCues) (window as any).audioCues.playSuccess();
+        return;
+      } else if (cmd === "NO") {
+        setAccessibilityMode("voice");
+        const msg = lang === "en" ? "Voice mode activated. Tap anywhere to interrupt me. Say help for commands." : "വോയ്സ് മോഡ് സജീവമാക്കി. എപ്പോൾ വേണമെങ്കിലും സ്ക്രീനിൽ തൊട്ട് എന്നെ നിർത്താം. കമാൻഡുകൾക്കായി സഹായം എന്ന് പറയുക.";
+        setMessages(prev => [...prev, { id: Date.now().toString(), role: "agent", text: msg }]);
+        speak(msg, false);
+        return;
+      }
+    }
+
+    if (cmd) {
+      handleVoiceCommand(cmd);
+      return;
+    }
+
+    addUserMessage(text);
+  };
+
+  const handleVoiceCommand = (cmd: string) => {
+    if (typeof window !== 'undefined' && (window as any).audioCues) (window as any).audioCues.playSuccess();
+    
+    switch(cmd) {
+      case 'STOP':
+        stopSpeaking();
+        break;
+      case 'REPEAT':
+        const lastAgentMsg = [...messages].reverse().find(m => m.role === 'agent');
+        if (lastAgentMsg) speak(lastAgentMsg.text, accessibilityMode === "screen-reader");
+        break;
+      case 'SLOWER':
+        if (speed === 'normal') toggleSpeed();
+        speak(lang === "en" ? "Speech is slower now." : "സംസാരം പതുക്കെയാക്കി.", accessibilityMode === "screen-reader");
+        break;
+      case 'FASTER':
+        if (speed === 'slow') toggleSpeed();
+        speak(lang === "en" ? "Speech is faster now." : "സംസാരം വേഗത്തിലാക്കി.", accessibilityMode === "screen-reader");
+        break;
+      case 'HELP':
+        const helpMsg = lang === "en" 
+          ? "You can say: repeat, stop, slower, faster, help, read sources, talk to a person, or change mode."
+          : "നിങ്ങൾക്ക് പറയാം: വീണ്ടും, നിർത്തുക, പതുക്കെ, വേഗത്തിൽ, സഹായം, ഉറവിടം, മനുഷ്യനോട്, അല്ലെങ്കിൽ മോഡ് മാറ്റുക.";
+        setMessages(prev => [...prev, { id: Date.now().toString(), role: "agent", text: helpMsg }]);
+        speak(helpMsg, accessibilityMode === "screen-reader");
+        break;
+      case 'CHANGE_MODE':
+        setAccessibilityMode(prev => prev === 'voice' ? 'screen-reader' : 'voice');
+        const modeMsg = lang === "en" ? "Accessibility mode changed." : "ആക്സസിബിലിറ്റി മോഡ് മാറ്റി.";
+        setMessages(prev => [...prev, { id: Date.now().toString(), role: "agent", text: modeMsg }]);
+        speak(modeMsg, accessibilityMode === "voice"); // Speak it if we are switching TO screen reader, actually if we switched to voice, we speak it. Wait, accessibilityMode hasn't updated in closure.
+        // It's better to let useEffect handle it, but for simplicity we'll just speak it overriding the flag.
+        speak(modeMsg, false); 
+        break;
+      default:
+        // Pass through commands like ESCALATE, WHERE_AM_I, SOURCES to the AI or handle locally
+        addUserMessage(`[SYSTEM COMMAND] User issued voice command: ${cmd}`);
+    }
+  };
 
   const addUserMessage = async (text: string) => {
     const userMsg: Message = { id: Date.now().toString(), role: "user", text };
@@ -87,9 +162,6 @@ export default function Home() {
       }
       
       if (data.transcript) {
-        // Sync messages from transcript, skipping the initial welcome message from client side 
-        // to merge properly, or just append the new transcript messages since the last sync.
-        // Actually, the simplest is to just overwrite the history with the new transcript + welcome msg.
         const transcriptMsgs: Message[] = data.transcript.map((t: any, i: number) => ({
           id: `t_${i}`,
           role: t.speaker === 'user' ? 'user' : 'agent',
@@ -102,7 +174,7 @@ export default function Home() {
         setMessages(prev => [...prev, agentMsg]);
       }
       
-      speak(data.reply);
+      speak(data.reply, accessibilityMode === "screen-reader");
       
     } catch (err: any) {
       console.error(err);
@@ -137,6 +209,24 @@ export default function Home() {
     toggleListening();
   };
 
+  useEffect(() => {
+    // Keyboard shortcuts
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't intercept if user is typing in an input
+      if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        toggleListening();
+      } else if (e.code === 'Escape') {
+        e.preventDefault();
+        stopSpeaking();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleListening, stopSpeaking]);
+
   let micColorClass = "bg-red-600 hover:bg-red-700";
   let statusText = t.statusReady;
   let isPulsing = false;
@@ -149,6 +239,7 @@ export default function Home() {
     micColorClass = "bg-yellow-500";
     statusText = "Agents are thinking...";
     isPulsing = true;
+    if (audioCues) audioCues.startThinking();
   } else if (micState === "speaking") {
     micColorClass = "bg-blue-600";
     statusText = t.statusSpeaking;
@@ -156,13 +247,44 @@ export default function Home() {
   } else if (micState === "error") {
     micColorClass = "bg-gray-500";
     statusText = "Error. Please try text input.";
+    if (audioCues) audioCues.playError();
   }
 
+  if (micState !== "thinking" && audioCues) {
+    audioCues.stopThinking();
+  }
+
+  // Full screen tap for voice mode
+  const handleFullScreenTap = (e: React.MouseEvent) => {
+    // Prevent intercepting button clicks or inputs
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.tagName === 'INPUT') return;
+    
+    if (accessibilityMode === 'voice') {
+      if (micState === "speaking") {
+        stopSpeaking();
+        toggleListening();
+      } else if (micState === "idle") {
+        toggleListening();
+      }
+    }
+  };
+
   return (
-    <div className="flex h-screen bg-white text-gray-900 font-sans overflow-hidden">
+    <div 
+      className="flex h-screen bg-white text-gray-900 font-sans overflow-hidden"
+      onClick={handleFullScreenTap}
+    >
       
       {/* Main Chat Area */}
       <div className={`flex flex-col h-full transition-all duration-300 ${showLogs ? 'w-2/3' : 'w-full'}`}>
+        
+        {/* ARIA Live Region for Screen Readers */}
+        <div aria-live="polite" aria-atomic="false" className="sr-only">
+          {accessibilityMode === "screen-reader" && messages.length > 0 && messages[messages.length - 1].role === 'agent' 
+            ? messages[messages.length - 1].text 
+            : ''}
+        </div>
         <header className="flex justify-between items-center p-6 border-b-4 border-blue-800 bg-blue-50">
           <div className="flex items-center gap-4">
             <h1 className="text-3xl font-extrabold text-blue-900">
