@@ -195,12 +195,12 @@ Accessibility is built-in from day one:
 > All personas, cases, and demo guidelines in the `data/synthetic/` directory are completely synthetic and fictional. The demo guidelines must be replaced with official, legally verified documents before real-world use. Sahaya is a tool for information discovery and does not replace official government decisions or medical assessments.
 
 ## Roadmap
-- [ ] **Auditor Agent:** Implement a final validation agent that checks all responses before they reach the user.
-- [ ] **Filled Form Generation:** Auto-fill and generate PDF applications based on extracted profiles.
-- [ ] **More Schemes & Languages:** Expand the database to include all state and central schemes and add support for Tamil and Hindi.
-- [ ] **Offline Open-Source Model:** Transition from cloud APIs to a localized, offline model for enhanced privacy and rural accessibility.
-- [ ] **RAG Q&A:** Enhance the search agent with advanced Retrieval-Augmented Generation for massive document libraries.
-- [ ] **Official Portal Integration:** Direct API integration with government portals for direct submissions.
+-  **Auditor Agent:** Implement a final validation agent that checks all responses before they reach the user.
+-  **Filled Form Generation:** Auto-fill and generate PDF applications based on extracted profiles.
+-  **More Schemes & Languages:** Expand the database to include all state and central schemes and add support for Tamil and Hindi.
+-  **Offline Open-Source Model:** Transition from cloud APIs to a localized, offline model for enhanced privacy and rural accessibility.
+-  **RAG Q&A:** Enhance the search agent with advanced Retrieval-Augmented Generation for massive document libraries.
+-  **Official Portal Integration:** Direct API integration with government portals for direct submissions.
 
 ## Team
 | Name | Role | GitHub |
