@@ -205,11 +205,11 @@ Accessibility is built-in from day one:
 ## Team
 | Name | Role | GitHub |
 |---|---|---|
-| Toka Nani | Full Stack Developer | @NaniToka |
+| Toka Nani | Full Stack Developer | NaniToka |
 | Anirban Ray | AI Architect | AnirbanRay01 |
 
 ## Acknowledgements
-- Built for [Placeholder Hackathon Name].
+- Built for Agentic AI BootCamp Hackathon at Amrita Vishwa Vidyapeetham, Amritapuri Campus.
 - Powered by [Anthropic Claude](https://www.anthropic.com/), [Next.js](https://nextjs.org/), and [TailwindCSS](https://tailwindcss.com/).
 
 ## License
