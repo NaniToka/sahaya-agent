@@ -205,8 +205,8 @@ Accessibility is built-in from day one:
 ## Team
 | Name | Role | GitHub |
 |---|---|---|
-| [Toka Nani] | [Frontend Developer] | [@naniToka] |
-| [Placeholder Name] | [Placeholder Role] | [@placeholder](#) |
+| Toka Nani | Full Stack Developer | @NaniToka |
+| Anirban Ray | AI Architect | AnirbanRay01 |
 
 ## Acknowledgements
 - Built for [Placeholder Hackathon Name].
